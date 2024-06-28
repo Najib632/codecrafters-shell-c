@@ -1,9 +1,10 @@
 #include <stdio.h>
 
-int main() {
+int 
+main(void) {
   // Uncomment this block to pass the first stage
-  // printf("$ ");
-  // fflush(stdout);
+  printf("$ ");
+  fflush(stdout);
 
   // Wait for user input
   char input[100];
