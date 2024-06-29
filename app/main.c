@@ -21,22 +21,15 @@ void
 check_exit(const char *cmd)
 {
 	int code = 0;
-	if (!strncmp("exit", cmd, 4)) {
-		code = exit_status(cmd);
-		exit(code);
-	}
+	code = exit_status(cmd);
+	exit(code);
 }
 
 void
 check_echo(const char *cmd)
 {
-	char *out = malloc(sizeof(cmd) - 5);
 
-	if (out == NULL)
-		return;
-	out = strcpy(out, cmd + 5);
-	fprintf(stdout, "%s\n", out);
-	free(out);
+	fprintf(stdout, "%s\n", cmd + 5);
 }
 
 int
@@ -73,8 +66,9 @@ main(void)
 		else
 			status = 0;
 
-		if (!check_builtin(input))
-			fprintf(stderr, "%s: command not found\n", input);
+		if (check_builtin(input))
+			continue;
+		fprintf(stderr, "%s: command not found\n", input);
 	}
 	return (0);
 }
