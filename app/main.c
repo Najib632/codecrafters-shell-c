@@ -3,15 +3,23 @@
 
 int
 main(void) {
-	// Uncomment this block to pass the first stage
-	printf("$ ");
-	fflush(stdout);
+	int status = 1;
 
-	// Wait for user input
-	char input[100];
+	while (status)
+	{
+		char input[100];
 
-	fgets(input, 100, stdin);
-	input[strlen(input) - 1] = '\0';
-	printf("%s: command not found\n", input);
+		/* Uncomment this block to pass the first stage */
+		printf("$ ");
+		fflush(stdout);
+
+		/* Wait for user input */
+		if (fgets(input, 100, stdin) != NULL)
+			input[strlen(input) - 1] = '\0';
+		else
+			status = 0;
+
+		fprintf(stderr, "%s: command not found\n", input);
+	}
 	return (0);
 }
