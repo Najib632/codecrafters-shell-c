@@ -5,18 +5,13 @@
 int
 exit_status(const char *cmd)
 {
-	char *code = (char *)cmd;
-	char c; 
-	int i, len, digit, number = 0;
+	int i, number = 0;
 
-	len = strlen(code);
-	for(i = 0; i < len; i++) 
+	for(i = 0; cmd[i]; i++)
     {
-		c = code[i]; 
-		if(c >= '0' && c <= '9')
+		if(cmd[i] >= '0' && cmd[i] <= '9')
 		{
-			digit = c - '0'; 
-			number = number * 10 + digit;
+			number = number * 10 + (cmd[i] - '0');
 		}
     }
 	return (number);
@@ -30,6 +25,33 @@ check_exit(const char *cmd)
 		code = exit_status(cmd);
 		exit(code);
 	}
+}
+
+void
+check_echo(const char *cmd)
+{
+	char *out = malloc(sizeof(cmd) - 5);
+
+	if (out == NULL)
+		return;
+	out = strcpy(out, cmd + 5);
+	fprintf(stdout, "%s\n", out);
+	free(out);
+}
+
+int
+check_builtin(const char *cmd)
+{
+	if (!strncmp("exit", cmd, 4))
+	{
+		check_exit(cmd);
+	}
+	else if (!strncmp("echo", cmd, 4))
+	{
+		check_echo(cmd);
+		return (1);
+	}
+	return (0);
 }
 
 int
@@ -51,8 +73,8 @@ main(void)
 		else
 			status = 0;
 
-		check_exit(input);
-		fprintf(stderr, "%s: command not found\n", input);
+		if (!check_builtin(input))
+			fprintf(stderr, "%s: command not found\n", input);
 	}
 	return (0);
 }
