@@ -3,9 +3,7 @@
 int
 main(void)
 {
-	int status = 1;
-
-	while (status)
+	while (1)
 	{
 		char input[100];
 
@@ -17,11 +15,12 @@ main(void)
 		if (fgets(input, 100, stdin) != NULL)
 			input[strlen(input) - 1] = '\0';
 		else
-			status = 0;
+			break;
 
-		if (check_builtin(input))
+		if (!check_cmd(input))
+			fprintf(stderr, "%s: command not found\n", input);
+		else
 			continue;
-		fprintf(stderr, "%s: command not found\n", input);
 	}
 	return (0);
 }
