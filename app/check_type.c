@@ -7,7 +7,9 @@ check_type(const char *cmd)
 	const char *delim = " ";
 	char *saveptr;
 	char *cmdlet = strtok_r(cmd_copy, delim, &saveptr);
+	/* char *path */
 
+	/* TODO create a pointer to str that will store path */
 	if (cmdlet == NULL)
 	{
 		perror("strtok");
@@ -19,7 +21,11 @@ check_type(const char *cmd)
 		{
 			fprintf(stdout, "%s is a shell builtin\n", cmdlet);
 		}
-		else if (check_path(cmdlet) == 0)
+		else if (check_path(cmdlet) == 1)
+		{
+			/* fprintf(stdout, "%s is %s\n", cmdlet, path); */
+		}
+		else
 		{
 			fprintf(stdout, "%s: not found\n", cmdlet);
 		}
@@ -54,7 +60,7 @@ check_builtin(char *cmdlet)
 }
 
 int
-check_path(char *cmdlet)
+check_path(char *cmdlet/*, char *dispth*/)
 {
 	char *PATH = NULL;
 	char *PTHCPY = NULL;
@@ -108,6 +114,8 @@ check_path(char *cmdlet)
 		}
 		if (access(full_path, X_OK) == 0)
 		{
+			/* dispath = full_path; */
+			/* TODO comment this out tomorrow */
 			fprintf(stdout, "%s is %s\n", cmdlet, full_path);
 			return (1);
 		}
