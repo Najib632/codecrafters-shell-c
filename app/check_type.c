@@ -1,5 +1,12 @@
 #include "main.h"
 
+/**
+ * check_type - Checks the type of each command in a string
+ * Description: Determines if each command is a builtin, in PATH, or not found
+ * @cmd: The string containing commands to check
+ *
+ * Return: Nothing
+ **/
 void
 check_type(const char *cmd)
 {
@@ -7,13 +14,12 @@ check_type(const char *cmd)
 	const char *delim = " ";
 	char *saveptr;
 	char *cmdlet = strtok_r(cmd_copy, delim, &saveptr);
-	/* char *path */
+	char *path = NULL;
 
 	/* TODO create a pointer to str that will store path */
 	if (cmdlet == NULL)
 	{
-		perror("strtok");
-		exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 	}
 	while (cmdlet != NULL)
 	{
@@ -21,9 +27,9 @@ check_type(const char *cmd)
 		{
 			fprintf(stdout, "%s is a shell builtin\n", cmdlet);
 		}
-		else if (check_path(cmdlet) == 1)
+		else if (check_path(cmdlet, &path) == 1)
 		{
-			/* fprintf(stdout, "%s is %s\n", cmdlet, path); */
+			fprintf(stdout, "%s is %s\n", cmdlet, path);
 		}
 		else
 		{
@@ -31,9 +37,18 @@ check_type(const char *cmd)
 		}
 		cmdlet = strtok_r(NULL, delim, &saveptr);
 	}
+	free(cmdlet);
 	free(cmd_copy);
+	free(path);
 }
 
+/**
+ * check_builtin - Checks if a command is a shell builtin
+ * Description: Compares the given command against a list of known builtins
+ * @cmdlet: The command to check
+ *
+ * Return: 1 if the command is a builtin, 0 otherwise
+ **/
 int
 check_builtin(char *cmdlet)
 {
@@ -59,8 +74,16 @@ check_builtin(char *cmdlet)
 	return (0);
 }
 
+/**
+ * check_path - Searches for a command in the PATH
+ * Description: Looks for the given command in directories specified by PATH
+ * @cmdlet: The command to search for
+ * @dispth: Pointer to store the full path if found
+ *
+ * Return: 1 if command is found, 0 otherwise
+ **/
 int
-check_path(char *cmdlet/*, char *dispth*/)
+check_path(char *cmdlet, char **dispth)
 {
 	char *PATH = NULL;
 	char *PTHCPY = NULL;
@@ -71,7 +94,7 @@ check_path(char *cmdlet/*, char *dispth*/)
 	char *delim = ":";
 
 	PATH = getenv("PATH");
-	if (PATH == NULL)
+	if (dispth != NULL && PATH == NULL)
 	{
 		perror("getenv");
 		exit(EXIT_FAILURE);
@@ -114,9 +137,9 @@ check_path(char *cmdlet/*, char *dispth*/)
 		}
 		if (access(full_path, X_OK) == 0)
 		{
-			/* dispath = full_path; */
-			/* TODO comment this out tomorrow */
-			fprintf(stdout, "%s is %s\n", cmdlet, full_path);
+			*dispth = strdup(full_path);
+			free(full_path);
+			free(PTHCPY);
 			return (1);
 		}
 		free(full_path);
@@ -127,6 +150,14 @@ check_path(char *cmdlet/*, char *dispth*/)
 	return (0);
 }
 
+/**
+ * safe_strcat - Safely concatenates two strings
+ * Description: Allocates new memory if needed to concatenate strings
+ * @dest: The destination string
+ * @src: The source string to append
+ *
+ * Return: A pointer to the resulting string, or NULL on failure
+ **/
 char
 *safe_strcat(char *dest, const char *src)
 {

@@ -17,7 +17,7 @@ main(void)
 		else
 			break;
 
-		if (!check_cmd(input))
+		if (check_cmd(input) == 0)
 			fprintf(stderr, "%s: command not found\n", input);
 		else
 			continue;

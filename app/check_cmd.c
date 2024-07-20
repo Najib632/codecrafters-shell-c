@@ -1,5 +1,12 @@
 #include "main.h"
 
+/**
+ * check_cmd - Checks and executes a command
+ * Description: Determines the type of command and executes it accordingly
+ * @cmd: The command string to check and execute
+ *
+ * Return: 1 if the command was executed, 0 if not found
+ **/
 int
 check_cmd(const char *cmd)
 {
@@ -22,5 +29,5 @@ check_cmd(const char *cmd)
 		}
 	}
 
-	return (0);
+	return (run(cmd) ? 0 : 1);
 }
